@@ -1,4 +1,10 @@
-import React, { createContext, Provider, useCallback, useState } from "react";
+import React, {
+  createContext,
+  Provider,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import { ThemeControl } from "./controller/themeControl";
 import { ContextThemeValues, ThemesName } from "./theme.type";
 
@@ -19,10 +25,11 @@ const contextValues: ContextThemeValues = {
 export const ThemeContext = createContext<ContextThemeValues>(contextValues);
 
 interface Props {
+  name: ThemesName;
   children?: JSX.Element;
 }
 
-export const ThemeProvider: React.FC<Props> = ({ children }) => {
+export const ThemeProvider: React.FC<Props> = ({ children, name }) => {
   const [state, setState] = useState<ContextThemeValues>(contextValues);
 
   const handleTheme = useCallback((name: ThemesName) => {
@@ -37,6 +44,10 @@ export const ThemeProvider: React.FC<Props> = ({ children }) => {
       });
     }
   }, []);
+
+  useEffect(() => {
+    handleTheme(name);
+  }, [name]);
 
   return (
     <ThemeContext.Provider
