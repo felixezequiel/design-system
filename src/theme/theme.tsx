@@ -1,53 +1,43 @@
-import React, {
-  createContext,
-  Provider,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import React, { createContext, useCallback, useState } from "react";
 import { ThemeControl } from "./controller/themeControl";
 import { ContextThemeValues, ThemesName } from "./theme.type";
 
-const theme = ThemeControl.getInstance().theme;
-
 const setTheme = (name: ThemesName) => {
-  const theme = ThemeControl.getInstance().findTheme(name);
-  if (theme) {
-    ThemeControl.getInstance().theme = theme;
-  }
+  ThemeControl.getInstance().theme = name;
 };
 
 const contextValues: ContextThemeValues = {
-  theme,
+  theme: ThemeControl.getInstance().theme,
+  colors: ThemeControl.getInstance().colors,
   setTheme,
 };
 
 export const ThemeContext = createContext<ContextThemeValues>(contextValues);
 
 interface Props {
-  name: ThemesName;
-  children?: JSX.Element;
+  children?: JSX.Element | JSX.Element[];
 }
 
-export const ThemeProvider: React.FC<Props> = ({ children, name }) => {
+export const ThemeProvider: React.FC<Props> = ({ children }) => {
   const [state, setState] = useState<ContextThemeValues>(contextValues);
 
   const handleTheme = useCallback((name: ThemesName) => {
     const newTheme = ThemeControl.getInstance().findTheme(name);
 
-    if (newTheme) {
-      setState((prevState) => {
-        return {
-          ...prevState,
-          theme: newTheme,
-        };
-      });
+    if (!newTheme) {
+      return;
     }
-  }, []);
 
-  useEffect(() => {
-    handleTheme(name);
-  }, [name]);
+    setTheme(name);
+
+    setState((prevState) => {
+      return {
+        ...prevState,
+        colors: ThemeControl.getInstance().colors,
+        theme: ThemeControl.getInstance().theme,
+      };
+    });
+  }, []);
 
   return (
     <ThemeContext.Provider

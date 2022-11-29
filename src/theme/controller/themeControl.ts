@@ -4,17 +4,32 @@ import { ThemesName } from "../theme.type";
 
 export class ThemeControl {
   public static instance: ThemeControl;
-  private _theme: Colors | undefined;
+
+  private _theme: ThemesName;
+
+  private _colors: Colors;
+
   private _themes = new Map<ThemesName, Colors>([
-    [ThemesName.DARK, themeDark],
-    [ThemesName.LIGHT, themeLight],
+    ["dark", themeDark],
+    ["light", themeLight],
   ]);
 
   private constructor() {
-    const cacheTheme = localStorage.getItem("ds_theme");
+    const name = localStorage.getItem("ds_theme") as ThemesName | undefined;
 
-    if (cacheTheme) {
-      this._theme = JSON.parse(cacheTheme) as Colors;
+    if (name) {
+      this._theme = name;
+
+      const colors = this.findTheme(name);
+
+      if (colors) {
+        this._colors = colors;
+      } else {
+        this._colors = themeLight;
+      }
+    } else {
+      this._theme = "light";
+      this._colors = themeLight;
     }
   }
 
@@ -30,15 +45,22 @@ export class ThemeControl {
     return this._themes.get(themeName);
   }
 
-  public get theme(): Colors {
-    if (!this._theme) {
-      return themeLight;
-    }
-
+  public get theme(): ThemesName {
     return this._theme;
   }
 
-  public set theme(colors: Colors) {
-    this._theme = colors;
+  public set theme(name: ThemesName) {
+    this._theme = name;
+    this.colors = this.findTheme(name) || this.colors;
+
+    localStorage.setItem("ds_theme", name);
+  }
+
+  public set colors(colors: Colors) {
+    this._colors = colors;
+  }
+
+  public get colors(): Colors {
+    return this._colors;
   }
 }

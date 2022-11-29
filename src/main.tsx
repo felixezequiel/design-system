@@ -1,11 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { EnvironmentTest } from "./environment/test";
-
-import "./index.css";
+import { ThemeProvider } from "./theme/theme";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <EnvironmentTest />
+    <ThemeProvider>
+      <EnvironmentTest />
+    </ThemeProvider>
   </React.StrictMode>
 );
