@@ -1,20 +1,22 @@
 import React, { useContext } from "react";
 import { sizings } from "../design/principles/principles";
 import { ThemeControl } from "../theme/controller/themeControl";
-import { ThemeContext, ThemeProvider } from "../theme/theme";
+import { ThemeContext } from "../theme/theme";
 
 export const EnvironmentTest: React.FC = () => {
   const { setTheme, colors, theme } = useContext(ThemeContext);
 
   return (
-    <ThemeProvider>
-      <div
-        style={{
-          width: sizings.colossal,
-          height: sizings.colossal,
-          backgroundColor: colors.default.high.DEFAULT,
-        }}
-      />
+    <div
+      style={{
+        width: sizings.colossal,
+        height: sizings.colossal,
+        backgroundColor: colors.default.high.DEFAULT,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
       <button
         onClick={() => {
           if (ThemeControl.getInstance().theme === "light") {
@@ -26,6 +28,6 @@ export const EnvironmentTest: React.FC = () => {
       >
         {theme}
       </button>
-    </ThemeProvider>
+    </div>
   );
 };
